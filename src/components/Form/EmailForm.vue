@@ -1,27 +1,75 @@
 <template>
   <div class="contact-me-form">
     <h3>Contact Me</h3>
-    <div class="underlined-input">
-      <input placeholder="Name" type="text" value />
-    </div>
-    <div class="underlined-input">
-      <input type="email" placeholder="Email" value />
-    </div>
-    <div class="text-area-container">
-      <textarea id="w3review" name="w3review" rows="4" cols="50" placeholder="How can I help?"></textarea>
-    </div>
-    <button class="slide_from_left">Submit</button>
+   <p v-if="errors.length && !isValidForm">
+    <b>Please correct the following error(s):</b>
+    <ul>
+      <li v-for="error in errors" :key="error">{{ error }}</li>
+    </ul>
+    </p>
+    <form @submit="checkForm">
+      <div class="underlined-input">
+        <input placeholder="Name" type="text" value v-model="name" />
+      </div>
+      <div class="underlined-input">
+        <input type="text" placeholder="Email" value v-model="email" />
+      </div>
+      <div class="text-area-container">
+        <textarea
+          v-model="message"
+          id="w3review"
+          name="w3review"
+          rows="4"
+          cols="50"
+          placeholder="How can I help?"
+        ></textarea>
+      </div>
+      <button
+        class="slide_from_left"
+        @click="sendEmail()"
+        v-bind:class="{ 'text-green': isValidForm }"
+      >Submit</button>
+    </form>
   </div>
 </template>
 <script>
 export default {
-  data(){
-    return{
-      name:'',
-      email:'',
-      message:''
-    }
-  }
+  data() {
+    return {
+      name: "",
+      email: "",
+      message: "",
+      errors: [],
+    };
+  },
+  methods: {
+    sendEmail() {},
+    checkForm: function (e) {
+      this.errors = [];
+      if (!this.name) {
+        this.errors.push("Please insert Name");
+      }
+      if (!this.message) {
+        this.errors.push("please insert message");
+      }
+      if (!this.email) {
+        this.errors.push("Email required.");
+      } else if (!this.validEmail(this.email)) {
+        this.errors.push("Valid email required.");
+      }
+      e.preventDefault();
+      
+    },
+    validEmail: function (email) {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
+  },
+  computed: {
+    isValidForm() {
+      return this.name !== "" && this.email !== "" && this.message !== "" && this.validEmail(this.email);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -71,9 +119,12 @@ export default {
     padding: 10px;
     font-weight: 700;
     letter-spacing: 3px;
-    @media (min-width:577px) {
-      width: 250px
+    @media (min-width: 577px) {
+      width: 250px;
     }
+  }
+  .text-green {
+    background-color: green;
   }
 }
 </style>
