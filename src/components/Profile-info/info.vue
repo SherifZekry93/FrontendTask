@@ -1,8 +1,8 @@
 <template>
   <div>
-    <header class="profile-info">
+    <header class="profile-info" >
       <div>
-        <img class="profile-picture" :src="src" alt="Profile Picture" />
+        <img class="profile-picture" :src="user.src" alt="Profile Picture" />
       </div>
       <div class="social-info">
         <font-awesome-icon icon="address-book" size="2x" />
@@ -12,39 +12,27 @@
         <font-awesome-icon icon="key" size="2x" />
         <font-awesome-icon icon="phone" size="2x" />
       </div>
+      <div class="about-me">About me:</div>
+      <div class="sub-about">Hi I'm {{user.name}} my email is {{user.email}} I live in {{user.city}}</div>
     </header>
-    <div class="about-me">About me:</div>
-    <div class="sub-about">Hi I'm {{name}} my email is {{email}} I live in {{city}}</div>
   </div>
 </template>
 <script>
 export default {
   data() {
-    return {
-      name: "",
-      src: "",
-      email: "",
-      city: "",
-      state: "",
-    };
+    return {};
   },
   mounted() {
-    fetch("https://randomuser.me/api", { mode: "cors" })
-      .then((response) => response.json())
-      .then((data) => {
-        const results = data.results[0];
-        console.log(results.picture);
-        this.name = results.name.first + " " + results.name.last;
-        this.email = results.email;
-        this.src = results.picture.large;
-        this.city = results.location.city;
-        this.state = results.location.state;
-      });
+    this.$store.dispatch("getUser");
   },
   computed: {
-    getInfo() {
-      let allData;
+    user() {
+      return this.$store.getters.getUser;
     },
+    loading()
+    {
+      return this.$store.getters.getLoading
+    }
   },
 };
 </script>
@@ -101,6 +89,7 @@ export default {
 }
 .sub-about {
   font-family: "Satisfy", cursive;
+  font-size: 37px;
   @media (min-width: 577px) {
     text-align: center;
   }

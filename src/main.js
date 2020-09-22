@@ -6,6 +6,7 @@ import router from './router'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAddressBook,faBlog,faEnvelope,faBirthdayCake,faKey,faPhone } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import {store} from './store/index';
 
 library.add(faAddressBook,faBlog,faEnvelope,faBirthdayCake,faKey,faPhone)
 
@@ -19,6 +20,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
