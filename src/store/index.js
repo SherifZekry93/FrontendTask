@@ -4,7 +4,8 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     user: null,
-    loading: false
+    loading: false,
+    error: null
   },
   mutations: {
     setUser(state, payload) {
@@ -12,6 +13,9 @@ export const store = new Vuex.Store({
     },
     setLoading(state, payload) {
       state.loading = payload;
+    },
+    setError(state, payload) {
+      state.error = payload;
     }
   },
   actions: {
@@ -21,19 +25,31 @@ export const store = new Vuex.Store({
         .then(response => response.json())
         .then(data => {
           const results = data.results[0];
-          let name = results.name.first + " " + results.name.last;
-          let email = results.email;
-          let src = results.picture.large;
-          let city = results.location.city;
-          let state = results.location.state;
+          const name = results.name.first + " " + results.name.last;
+          const email = results.email;
+          const src = results.picture.large;
+          const city = results.location.city;
+          const state = results.location.state;
+          const phone = results.phone;
+          const cell = results.cell;
+          const dateOfBirth = results.dob.date;
+          const age = results.dob.age;
           commit("setUser", {
             name: name,
             email: email,
             src: src,
             city: city,
-            state: state
+            state: state,
+            phone:phone,
+            cell:cell,
+            dateOfBirth:dateOfBirth,
+            age:age
           });
-          commit("setLoading",falses)
+          commit("setLoading", false);
+        })
+        .catch(error => {
+          commit("setLoading", false);
+          commit("setError", error);
         });
     }
   },
@@ -41,9 +57,11 @@ export const store = new Vuex.Store({
     getUser(state) {
       return state.user;
     },
-    getLoading(state)
-    {
-        return state.loading
+    getLoading(state) {
+      return state.loading;
+    },
+    getError(state) {
+      return state.error;
     }
   }
 });
